@@ -1,18 +1,15 @@
-FROM alpine:3.10
+FROM alpine:3.12.0
 
-MAINTAINER Eldad Assis <eldad.assis@gmail.com>
+LABEL maintainer="ioannis.skoulis@confirmit.com"
 
-# Install postfix and supervisor
 RUN apk add --no-cache \
         postfix \
         rsyslog \
         supervisor && \
         /usr/bin/newaliases
 
-# Copy files into container
 COPY . /
 
-# SMTP port
 EXPOSE 25
 
 ENTRYPOINT [ "/entrypoint.sh" ]

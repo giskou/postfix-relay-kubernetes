@@ -5,36 +5,11 @@
 # High availability
 replicaCount: 2
 
-# Role Based Access Control
-# Ref: https://kubernetes.io/docs/admin/authorization/rbac/
-rbac:
-  create: true
-  role:
-    ## Rules to create. It follows the role specification
-    rules:
-    - apiGroups:
-      - ''
-      resources:
-      - services
-      - endpoints
-      - pods
-      verbs:
-      - get
-      - watch
-      - list
-
-# Service Account
-# Ref: https://kubernetes.io/docs/admin/service-accounts-admin/
-serviceAccount:
-  create: true
-  ## The name of the ServiceAccount to use.
-  ## If not set and create is true, a name is generated using the fullname template
-  name:
-
 # Docker image
 image:
-  repository: eldada-docker-examples.bintray.io/postfix-relay
-  tag: 0.3
+  repository: giskou/postfix-relay
+  # default tag is the appVersion from Chart.yaml
+  tag: ""
   pullPolicy: IfNotPresent
 
 # Expose pods with service on port 25
@@ -50,7 +25,7 @@ smtp:
   relayMyhostname: my.host.local
   relayUsername: relayuser
   relayPassword: relaypassword
-  relayNetworks: '10.0.0.0/8,127.0.0.0/8,172.17.0.0/16,192.0.0.0/8'
+  relayNetworks: '10.244.0.0/16'
 
 # Resources needed for the pods
 resources:
@@ -66,3 +41,8 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+storage:
+  emptyDir: true
+  storageClassName: ""
+  size: '1Gi'

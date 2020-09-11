@@ -1,12 +1,12 @@
 apiVersion: v1
-version: 0.1.2
-appVersion: 0.3
-description: A Helm chart for a highly available postfix relay in Kubernetes
 name: postfix
+version: 0.0.1
+appVersion: 3.5.7
+description: A Helm chart for a highly available postfix relay in Kubernetes
 keywords:
 - postfix
-sources:
-- https://github.com/eldada/postfix-relay-kubernetes
+- smtp
+- relay
 maintainers:
-- name: eldada
-  email: eldada@jfrog.com
+- name: Giannis Skoulis
+  email: ioannis.skoulis@gmail.com

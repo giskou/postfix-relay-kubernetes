@@ -38,4 +38,4 @@ postconf 'always_add_missing_headers = yes' || exit 1
 
 # Have supervisord run and control postfix (/etc/supervisor.d/postfix.ini)
 echo -e "\nLoading postfix service"
-/usr/bin/supervisord -n
+exec /usr/bin/supervisord -n
