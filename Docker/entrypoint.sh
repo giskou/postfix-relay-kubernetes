@@ -2,8 +2,6 @@
 
 TX_SMTP_RELAY_HOST=${TX_SMTP_RELAY_HOST?Missing env var TX_SMTP_RELAY_HOST}
 TX_SMTP_RELAY_MYHOSTNAME=${TX_SMTP_RELAY_MYHOSTNAME?Missing env var TX_SMTP_RELAY_MYHOSTNAME}
-TX_SMTP_RELAY_USERNAME=${TX_SMTP_RELAY_USERNAME?Missing env var TX_SMTP_RELAY_USERNAME}
-TX_SMTP_RELAY_PASSWORD=${TX_SMTP_RELAY_PASSWORD?Missing env var TX_SMTP_RELAY_PASSWORD}
 TX_SMTP_RELAY_NETWORKS=${TX_SMTP_RELAY_NETWORKS:-10.0.0.0/8,127.0.0.0/8,172.17.0.0/16,192.0.0.0/8}
 
 echo "Setting configuration"
@@ -13,15 +11,18 @@ echo "TX_SMTP_RELAY_USERNAME    -  ${TX_SMTP_RELAY_USERNAME}"
 echo "TX_SMTP_RELAY_PASSWORD    -  (hidden)"
 echo "TX_SMTP_RELAY_NETWORKS    -  ${TX_SMTP_RELAY_NETWORKS}"
 
-# Write SMTP credentials
-echo "${TX_SMTP_RELAY_HOST} ${TX_SMTP_RELAY_USERNAME}:${TX_SMTP_RELAY_PASSWORD}" > /etc/postfix/sasl_passwd || exit 1
-postmap /etc/postfix/sasl_passwd || exit 1
-rm /etc/postfix/sasl_passwd || exit 1
-
-# Set configurations
-postconf 'smtp_sasl_auth_enable = yes' || exit 1
-postconf 'smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd' || exit 1
-postconf 'smtp_sasl_security_options =' || exit 1
+if ! [ -z "$TX_SMTP_RELAY_PASSWORD" ]; then
+  # Write SMTP credentials
+  echo "${TX_SMTP_RELAY_HOST} ${TX_SMTP_RELAY_USERNAME}:${TX_SMTP_RELAY_PASSWORD}" > /etc/postfix/sasl_passwd || exit 1
+  postmap /etc/postfix/sasl_passwd || exit 1
+  rm /etc/postfix/sasl_passwd || exit 1
+  TX_SMTP_RELAY_USERNAME=${TX_SMTP_RELAY_USERNAME?Missing env var TX_SMTP_RELAY_USERNAME}
+  TX_SMTP_RELAY_PASSWORD=${TX_SMTP_RELAY_PASSWORD?Missing env var TX_SMTP_RELAY_PASSWORD}
+  # Set configurations
+  postconf 'smtp_sasl_auth_enable = yes' || exit 1
+  postconf 'smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd' || exit 1
+  postconf 'smtp_sasl_security_options =' || exit 1
+fi
 
 # These are required
 postconf "relayhost = ${TX_SMTP_RELAY_HOST}" || exit 1

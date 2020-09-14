@@ -10,7 +10,7 @@ image:
   repository: giskou/postfix-relay
   # default tag is the appVersion from Chart.yaml
   tag: ""
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
 
 # Expose pods with service on port 25
 service:
@@ -20,11 +20,10 @@ service:
 # SMTP server details
 # Used by postfix to connect to SMTP server
 smtp:
-  # Example with mailgun
-  relayHost: "[smtp.mailgun.org]:587"
-  relayMyhostname: my.host.local
-  relayUsername: relayuser
-  relayPassword: relaypassword
+  relayHost: "[smtp.example.com]:25"
+  relayMyhostname: example.com
+#  relayUsername: relayuser
+#  relayPassword: relaypassword
   relayNetworks: '10.244.0.0/16'
 
 # Resources needed for the pods
@@ -43,6 +42,5 @@ tolerations: []
 affinity: {}
 
 storage:
-  emptyDir: true
   storageClassName: ""
   size: '1Gi'
